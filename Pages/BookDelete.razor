@@ -1,0 +1,53 @@
+﻿@page "/BookDelete/{id:int}"
+@using Models
+@using Services
+@inject IBookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Book Delete</h3>
+<p style="text-align: Left">Warning are you sure you want to delete this book?</p>
+
+<Editform Model="@book">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <td>Title</td>
+                <td><input class="form-control" col-sm-4 type="text" @bind="book.Title" /></td>
+            </tr>
+            <tr>
+                <td>Author</td>
+                <td><input class="form-control" col-sm-4 type="text" @bind="book.Author" /></td>
+            </tr>
+            <tr>
+                <td>Release Date</td>
+                <td><input class="form-control" col-sm-4 type="text" @bind="book.RealeaseDate" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="btn btn-primary" type="submit" value="Delete" @onclick="DeleteBook" />
+                    <input class="btn btn-primary" type="button" value="Cancel" @onclick="Cancel"/>
+                </td>
+            </tr>
+        </thead>
+    </table>
+
+</Editform>
+
+@code {
+    [Parameter]
+    public int id{get;set;}
+    private Book book = new Book();
+    protected override async Task OnInitializedAsync()
+    {
+        book= await BookService.GetBookById(id);
+    }
+    protected async Task DeleteBook()
+    {
+        await BookService.DeleteBook(id);
+        NavigationManager.NavigateTo("/");
+    }
+    protected void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

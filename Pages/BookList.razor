@@ -1,0 +1,55 @@
+﻿@page "/"
+@using Models
+@using Services
+@inject IBookService BookService
+@inject NavigationManager NavigationManager
+<h1>BookList</h1>
+<p>This page shows a list of all the books</p>
+@if (books == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <div>
+        <a href="/BookDetails" type="button" class="btn btn-warning">Add new Book</a>
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Release Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.RealeaseDate</td>
+                    <td>
+                        <a href="/BookDetails/@book.Id" type="button" class="btn btn-primary">Update</a> 
+                        <a href="/BookDelete/@book.Id" type=""class="btn btn-primary">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookService.GetAllBooks();
+        StateHasChanged();
+    }
+
+    public IEnumerable<Book>? books { get; set; }
+    
+    protected void DeleteBook()
+    {
+        NavigationManager.NavigateTo("/BookDelete");
+    }
+}
